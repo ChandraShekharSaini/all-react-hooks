@@ -1,30 +1,23 @@
 import React, { useActionState } from 'react'
+import { UNSAFE_createClientRoutesWithHMRRevalidationOptOut } from 'react-router-dom'
 
 const useActionState1 = () => {
 
-
     const addUser = (prevData, formData) => {
-        console.log("Add User")
-        const password = formData.get('password');
         const name = formData.get('name')
+        const password = formData.get('password')
 
         new Promise(resolve => setTimeout(resolve, 3000))
-        console.log(name)
 
-        if (!password || !name) {
-            return { error: "Input Field is Empty" }
-        }
+        if (!name) return { error: "Name field is empty" }
 
-        if (password && name) {
+        if (!password) return { error: "Password field is empty" }
 
-            return { message: "User Added Successfully" }
-        }
-
+        if (name && password) return { message: "Form Submitted Successfully" }
     }
 
 
-    const [data, action, pending] = useActionState(addUser, 0)
-
+    const [data, action, ispending] = useActionState(addUser, { error: "Form Not Submitted" })
 
 
 

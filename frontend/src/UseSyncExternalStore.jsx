@@ -36,7 +36,7 @@ const Score = () => {
     }
 
 
-    const updatedValue = useSyncExternalStore(subscribe, getSnapShot)
+    const updatedValue = useSyncExternalStore(subscribe,getSnapShot)
 
     return (
         <p style={{ fontSize: "40px", fontWeight: "700" }}>  Score Is:<strong style={{ color: "red" }}>{updatedValue}</strong></p>

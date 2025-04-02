@@ -1,93 +1,88 @@
-import React, { useState, useEffect, useOptimistic } from "react";
+import { Button } from 'bootstrap';
+import React, { useEffect, useOptimistic, useState } from 'react'
 
-const App = () => {
-  const [skills, setskills] = useState([]);
-  const [name, setname] = useState("");
-  const [optimisticSkills, addOptimisticSkill] = useOptimistic(skills, (state, newSkill) => [
-    ...state,
-    newSkill,
-  ]);
+const useOptimistic1 = () => {
+
+
+  const [skills, addskills] = useState([]);
+  const [name, setname] = useState(null)
+  const [optSkills, addoptSkills] = useOptimistic(skills, (state, newSkills) => { return [...state, newSkills] })
 
   useEffect(() => {
-    getSkills();
-  }, []);
+    getSkills()
+  }, [])
 
-  // Fetch skills from the server
+
   const getSkills = async () => {
-    try {
-      const resp = await fetch("http://localhost:4500/getSkills");
-      if (!resp.ok) {
-        console.error("Error fetching skills:", resp.status);
-        return;
-      }
-      const data = await resp.json();
-      setskills(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+
+    const res = await fetch('http://localhost:4500/getSkills', {
+      method: 'GET',
+    })
+
+    if (!res.ok) {
+      throw new Error(res.statusText)
     }
-  };
+
+    const data = await res.json()
+
+    addskills(data)
 
 
-  const delay = (ms) =>{
-    console.log(ms)
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  // Add a new skill
-  const addSkills = async () => {
-   
-    if (!name.trim()) {
-      console.error("Skill name cannot be empty");
-      return;
-    }
+
+  const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+
+  const addSkills = async (ev) => {
+    // ev.preventDefault()
+
     const id = Math.floor(Math.random() * 10000);
-    const newSkill = { name, id };
 
-    // Optimistically update the UI immediately
-    addOptimisticSkill(newSkill);
+    const newSkills = { name, id }
 
-    // Send data to the server
+    addoptSkills(newSkills)
+
+
     const res = await fetch("http://localhost:4500/addSkills", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(newSkill),
-    });
+      body: JSON.stringify({ name, id })
+    })
 
-    if (!res.ok) {
-      console.error("Error adding skill:", res.status);
-      return;
-    }
-     
-    await delay(3000)
-    const data = await res.json();
+    await sleep(3000)
+
+    const data = await res.json()
+
     if (data) {
-      console.log("Skill added successfully");
-      getSkills(); // Refresh skills after confirmation
+      getSkills()
     }
-  };
+
+
+  }
+
+
 
   return (
     <section>
-      <h1>Add Skills</h1>
+
       <form action={addSkills}>
-        <input
-          onChange={(ev) => setname(ev.target.value)}
-          type="text"
-          name="skills"
-          value={name}
-          placeholder="Add Skills"
-        />
-        <button type="submit">Add Skills</button>
+        <input onChange={(ev) => setname(ev.target.value)} type='text' placeholder='Enter Skills' />
+        <button type='submit'>Add Skills</button>
       </form>
 
-      {/* Show optimistic skills */}
-      {optimisticSkills.map((item, index) => (
-        <div key={item.id}>{item.name}</div>
-      ))}
-    </section>
-  );
-};
+      {
+        optSkills.map((item, index) => {
+          return <div key={index}>{item.name}</div>
+        })
+      }
 
-export default App;
+    </section>
+  )
+}
+
+export default useOptimistic1

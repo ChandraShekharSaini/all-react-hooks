@@ -17,7 +17,6 @@ const UseImperativeRefParent = () => {
             <button onClick={() => inputRef.current.clearInput()}>Clear Input</button>
             <br></br>
             <br></br>
-
             <button onClick={() => inputRef.current.styleInput()} >Style Input</button>
         </div>
     )

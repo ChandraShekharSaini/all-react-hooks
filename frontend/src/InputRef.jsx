@@ -15,7 +15,7 @@ const InputRef = (props) => {
 
     console.log(props)
     return (
-        <input type="text" placeholder="Enter " ref={props.ref} />
+        <input type="text" placeholder="Enter" ref={props.ref} />
     )
 }
 

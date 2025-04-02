@@ -11,7 +11,7 @@ app.use(cors())
 
 import Data from './models/Data.js'
 app.post("/addSkills", async (req, res, next) => {
-
+   console.log('nmnm')
     const { name, id } = req.body
     console.log(name, id)
 
